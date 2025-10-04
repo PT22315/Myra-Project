@@ -46,9 +46,9 @@ public class ProjectMyra extends JFrame {
         private Image imageFullheart;
         private Image imageEmptyheart;
         int xBg = 0, yBg = 0; //bg
-        int xMyra = 150, yMyra = 550; //actor Myra
-        int xTurtle = 1000 , yTurtle = 550; //actor Turtle
-        int xCoin = 1500 , yCoin = 575; //coin
+        int xMyra = 150, yMyra = 600; //actor Myra
+        int xTurtle = 1000 , yTurtle = 600; //actor Turtle
+        int xCoin = 1500 , yCoin = 625; //coin
         int xFullheart = 20 , yFullheart = 10; //fullheart
 
         DrawArea(Image bg, Image actorMyra , Image actorTurtle , Image coin , Image Fullheart, Image Emptyheart) {
@@ -67,13 +67,13 @@ public class ProjectMyra extends JFrame {
             g.drawImage(imageBg, xBg, yBg, getWidth() , getHeight(), this);
 
             // actor Myra
-            g.drawImage(imageMyra, xMyra, yMyra, 200 , 200, this);
+            g.drawImage(imageMyra, xMyra, yMyra, 150 , 150, this);
             
             //actor Turtle
-            g.drawImage(imageTurtle, xTurtle, yTurtle, 200 , 210, this);
+            g.drawImage(imageTurtle, xTurtle, yTurtle, 150 , 160, this);
             
             //coin
-            g.drawImage(imageCoin, xCoin, yCoin, 150 , 150, this);
+            g.drawImage(imageCoin, xCoin, yCoin, 100 , 100, this);
             
             //fullheart
             g.drawImage(imageFullheart, xFullheart, yFullheart,75,60 , this);

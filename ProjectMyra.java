@@ -1,106 +1,201 @@
 package projectmyra;
-
-
-
+//real
 import java.awt.*;
+import java.awt.event.*;
 import java.net.URL;
 import javax.swing.*;
 
 public class ProjectMyra extends JFrame {
-
     public ProjectMyra() {
-        // bg
-        URL imageURL = this.getClass().getResource("images/game bg.jpg");
-        Image imageBg = new ImageIcon(imageURL).getImage();
+        setTitle("Myra");
+        setSize(1800, 1080);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // actor Myra
-        URL actorMyraURL = this.getClass().getResource("images/myra.png");
-        Image imageActorMyra = new ImageIcon(actorMyraURL).getImage();
-        
-        // actor Turtle
-        URL actorTurtleURL = this.getClass().getResource("images/turtle.png");
-        Image imageActorTurtle = new ImageIcon(actorTurtleURL).getImage();
-        
-        // coin
-        URL coinURL = this.getClass().getResource("images/coin.png");
-        Image imageCoin = new ImageIcon(coinURL).getImage();
-        
-        // full heart
-        URL fullheartURL = this.getClass().getResource("images/full heart.png");
-        Image imageFullheart = new ImageIcon(fullheartURL).getImage();
-        
-        // empty heart
-        URL emptyheartURL = this.getClass().getResource("images/empty heart.png");
-        Image imageEmptyheart = new ImageIcon(emptyheartURL).getImage();
+        // Show menu first
+        add(new MenuPanel(this));
 
-        // DrawArea
-        add(new DrawArea(imageBg, imageActorMyra , imageActorTurtle , imageCoin , imageFullheart , imageEmptyheart));
+        setVisible(true);
     }
 
-    // inner class
-    public static class DrawArea extends JPanel {
-        private Image imageBg;
-        private Image imageMyra;
-        private Image imageTurtle;
-        private Image imageCoin;
-        private Image imageFullheart;
-        private Image imageEmptyheart;
-        int xBg = 0, yBg = 0; //bg
-        int xMyra = 150, yMyra = 600; //actor Myra
-        int xTurtle = 1000 , yTurtle = 600; //actor Turtle
-        int xCoin = 1500 , yCoin = 625; //coin
-        int xFullheart = 20 , yFullheart = 10; //fullheart
+    // Static method to create game panel
+    public static DrawArea createGamePanel() {
+        // Load background
+        URL imageURL = ProjectMyra.class.getResource("images/game bg.jpg");
+        Image imageBg = new ImageIcon(imageURL).getImage();
 
-        DrawArea(Image bg, Image actorMyra , Image actorTurtle , Image coin , Image Fullheart, Image Emptyheart) {
-            this.imageBg = bg;
-            this.imageMyra = actorMyra;
-            this.imageTurtle = actorTurtle;
-            this.imageCoin = coin;
-            this.imageFullheart = Fullheart;
-            this.imageEmptyheart = Emptyheart;
+        // Load actors
+        Myra myra = new Myra("images/myra.png", 150, 600, 150, 150);
+        Turtle turtle = new Turtle("images/turtle.png", 1000, 600, 150, 160);
+        Coin coin = new Coin("images/coin.png", 1500, 625, 100, 100);
+
+        // Load hearts
+        URL fullheartURL = ProjectMyra.class.getResource("images/full heart.png");
+        Image fullHeart = new ImageIcon(fullheartURL).getImage();
+        URL emptyheartURL = ProjectMyra.class.getResource("images/empty heart.png");
+        Image emptyHeart = new ImageIcon(emptyheartURL).getImage();
+
+        return new DrawArea(imageBg, myra, turtle, coin, fullHeart, emptyHeart);
+    }
+
+    // ============================
+    // DrawArea
+    // ============================
+    static class DrawArea extends JPanel implements KeyListener {
+        private Image bg, fullHeart, emptyHeart;
+        private Myra myra;
+        private Turtle turtle;
+        private Coin coin;
+        
+        // Timer and score variables
+        private int timeLeft = 60;  // seconds
+        private int score = 1000;   // starting score
+        private Timer gameTimer;
+        
+        DrawArea(Image bg, Myra myra, Turtle turtle, Coin coin, Image fullHeart, Image emptyHeart) {
+            this.bg = bg;
+            this.myra = myra;
+            this.turtle = turtle;
+            this.coin = coin;
+            this.fullHeart = fullHeart;
+            this.emptyHeart = emptyHeart;
+
+            Timer frametimer = new Timer(20, e -> {
+                myra.update();
+                turtle.update();
+                coin.update();
+
+                // Collision Coin
+                if (myra.getBounds().intersects(coin.getBounds())) {
+                    int choice = JOptionPane.showOptionDialog(
+                        this,
+                        "Victory! You got the coin!\nYour score: " + score,
+                        "Game Over",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE,
+                        null,
+                        new String[]{"Exit", "Play Again"},
+                        "Exit"
+                    );
+                    if (choice == JOptionPane.YES_OPTION) System.exit(0);
+                    else {
+                        resetGame();
+                    
+                    }
+                }
+
+                // Collision Turtle
+                if (myra.getBounds().intersects(turtle.getBounds())) {
+                    if (myra.getY() + myra.getHeight() <= turtle.getY() + 50) {
+                        // ข้ามหัวเต่า → ไม่ลดชีวิต
+                    } else {
+                        myra.life--;
+                        if (myra.life <= 0) {
+                            int choice = JOptionPane.showOptionDialog(
+                                this,
+                                "You Lose! \nYour score: " + score,
+                                "Game Over",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.ERROR_MESSAGE,
+                                null,
+                                new String[]{"Exit", "Play Again"},
+                                "Exit"
+                            );
+                            if (choice == JOptionPane.YES_OPTION) System.exit(0);
+                            else {
+                                resetGame();
+                            }
+                        } else {
+                            // ตายครั้งแรก/ครั้งสอง → รีเซ็ตตำแหน่ง Myra
+                            myra.setX(150);
+                            myra.setY(600);
+                        }
+                    }
+                }
+
+                repaint();
+            });
+            frametimer.start();
+            
+            // Countdown timer and score reduction
+            gameTimer = new Timer(1000, e -> {
+                timeLeft--;
+                score -= 1000 / 60; // reduce score gradually
+                if (timeLeft <= 0) {
+                    gameTimer.stop();
+                    int choice = JOptionPane.showOptionDialog(
+                        this,
+                        "Time’s up!\nYou Lose!",
+                        "Game Over",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.ERROR_MESSAGE,
+                        null,
+                        new String[]{"Exit", "Play Again"},
+                        "Exit"
+                    );
+                    if (choice == JOptionPane.YES_OPTION) System.exit(0);
+                    else resetGame();
+                }
+            });
+            gameTimer.start();
+            addKeyListener(this);
         }
-
+        // Reset game state
+        private void resetGame() {
+            myra.life = 3;
+            myra.setX(150);
+            myra.setY(600);
+            turtle.setX(1000);
+            coin.setX(1500);
+            coin.setY(625);
+            timeLeft = 60;
+            score = 1000;
+            gameTimer.start();
+        }
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
-            // bg
-            g.drawImage(imageBg, xBg, yBg, getWidth() , getHeight(), this);
+            g.drawImage(bg, 0, 0, getWidth(), getHeight(), this);
+            myra.draw(g, this);
+            turtle.draw(g, this);
+            coin.draw(g, this);
 
-            // actor Myra
-            g.drawImage(imageMyra, xMyra, yMyra, 150 , 150, this);
-            
-            //actor Turtle
-            g.drawImage(imageTurtle, xTurtle, yTurtle, 150 , 160, this);
-            
-            //coin
-            g.drawImage(imageCoin, xCoin, yCoin, 100 , 100, this);
-            
-            //fullheart
-            g.drawImage(imageFullheart, xFullheart, yFullheart,75,60 , this);
-            g.drawImage(imageFullheart, xFullheart + 60, yFullheart,75,60 , this);
-            g.drawImage(imageFullheart, xFullheart + 120, yFullheart,75,60 , this);
-            
-            /*emptyheart 
-            (draw when myra hit turtle)
-            when hit turtle -> the most right fullheart will be replace by the emptyheart
-            */
-            //use this parameter for first time die g.drawImage(imageEmptyheart, xFullheart + 130, yFullheart + 7 ,58,52 , this);
-            //use this parameter for second time die g.drawImage(imageEmptyheart, xFullheart + 70, yFullheart + 7 ,58,52 , this);
-            //use this parameter when lost the last life g.drawImage(imageEmptyheart, xFullheart + 10, yFullheart + 7 ,58,52 , this);
-            
-            //g.drawImage(imageEmptyheart, xFullheart + 130, yFullheart + 7 ,57,52 , this);
-            //g.drawImage(imageEmptyheart, xFullheart + 70, yFullheart + 7 ,58,52 , this);
-            //g.drawImage(imageEmptyheart, xFullheart + 10, yFullheart + 7 ,58,52 , this);
-            
+            // Hearts
+            int xH = 20, yH = 10;
+            for (int i = 0; i < 3; i++) {
+                if (i < myra.life) g.drawImage(fullHeart, xH + i*60, yH, 75, 60, this);
+                else g.drawImage(emptyHeart, xH + i*60 + 8, yH+7, 58, 52, this);
+            }
+            // Draw time and score
+            g.setFont(new Font("Arial", Font.BOLD, 40));
+            g.setColor(Color.WHITE);
+            g.drawString("Time: " + timeLeft + "s", 1300, 70);
+            g.drawString("Score: " + score, 1300, 130);
         }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_A -> myra.setLeftPressed(true);
+                case KeyEvent.VK_D -> myra.setRightPressed(true);
+                case KeyEvent.VK_W, KeyEvent.VK_SPACE -> myra.jump();
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_A -> myra.setLeftPressed(false);
+                case KeyEvent.VK_D -> myra.setRightPressed(false);
+            }
+        }
+        @Override public void keyTyped(KeyEvent e) {}
     }
 
+    // ============================
+    // Main
+    // ============================
     public static void main(String[] args) {
-        JFrame demo = new ProjectMyra();
-        demo.setTitle("Demo");
-        demo.setSize(1800, 1080);
-        demo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        demo.setVisible(true);
+        new ProjectMyra();
     }
 }
 //test 123

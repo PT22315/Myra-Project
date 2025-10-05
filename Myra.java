@@ -1,6 +1,5 @@
-
 package projectmyra;
-//real
+//chatgpt
 import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
@@ -21,6 +20,8 @@ public class Myra extends Actor {
 
     @Override
     public void update() {
+        //start jump til hit ground
+        //start if loop when use jump() 
         if (isJumping) {
             setY(getY() - jumpVelocity);
             jumpVelocity -= gravity;
@@ -29,20 +30,26 @@ public class Myra extends Actor {
                 isJumping = false;
             }
         }
+        //go left-right
         if (leftPressed) setX(getX() - 10);
         if (rightPressed) setX(getX() + 10);
-
+        //stay in frame
         if (getX() < 0) setX(0);
         if (getX() > 1600) setX(1600);
     }
 
     public void jump() {
+        //dont activate if still jumping
         if (!isJumping) {
             isJumping = true;
             jumpVelocity = 50;
         }
     }
 
-    public void setLeftPressed(boolean value) { leftPressed = value; }
-    public void setRightPressed(boolean value) { rightPressed = value; }
+    public void setLeftPressed(boolean value) { 
+        leftPressed = value; 
+    }
+    public void setRightPressed(boolean value) {
+        rightPressed = value; 
+    }
 }

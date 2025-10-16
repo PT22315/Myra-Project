@@ -8,7 +8,7 @@ import javax.swing.*;
 
 class Turtle extends Actor {
         private int dir = 1; 
-        private final int minX = 800;
+        private final int minX = 500;
         private final int maxX = 1200;
         //for animation
         private Image turtleRight, turtleLeft;

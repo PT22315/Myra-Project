@@ -42,6 +42,9 @@ public class Myra extends Actor {
     public void setGroundY(int groundY) {
         this.groundY = groundY;
     }
+    public boolean isJumping() {
+        return isJumping;
+    }
     public void resetPosition(int x, int y) {
         setX(x);
         setY(y);
@@ -100,7 +103,7 @@ public class Myra extends Actor {
         //dont activate if still jumping
         if (!isJumping) {
             isJumping = true;
-            jumpVelocity = 50;
+            jumpVelocity = 40;
         }
     }
 

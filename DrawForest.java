@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package projectmyra;
 
+package projectmyra;
+//real
 import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
@@ -13,6 +10,8 @@ public class DrawForest extends DrawArea {
     private Turtle turtle;
     private Coin coin;
     private Image bg, fullHeart, emptyHeart;
+    //resettime item
+    private Item timeResetItem;
 
     public DrawForest(JFrame frame) {
         super(frame);
@@ -25,9 +24,11 @@ public class DrawForest extends DrawArea {
 
         myra = new Myra("images/myra1.png", 150, 600, 150, 150);
         myra.setGroundY(600);
-
+        
         turtle = new Turtle("images/turtle1.png", 1000, 600, 150, 160);
         coin = new Coin("images/coin.png", 1500, 625, 100, 100);
+        
+        timeResetItem = new Item("images/item.png", 500, 200, 100, 120);
 
         fullHeart = new ImageIcon(getClass().getResource("images/full heart.png")).getImage();
         emptyHeart = new ImageIcon(getClass().getResource("images/empty heart.png")).getImage();
@@ -38,7 +39,13 @@ public class DrawForest extends DrawArea {
             myra.update();
             turtle.update();
             coin.update();
-
+            
+            //Collision Item
+            if(timeResetItem.isActive() && myra.getBounds().intersects(timeResetItem.getBounds())) {
+                timeResetItem.setActive(false); 
+                timeLeft = 60;  
+                score = 1000;  
+            }
             // Collision Coin
             if (myra.getBounds().intersects(coin.getBounds())) {
                 stopAllTimers();
@@ -144,6 +151,9 @@ public class DrawForest extends DrawArea {
         myra.draw(g, this);
         turtle.draw(g, this);
         coin.draw(g, this);
+        if(timeResetItem.isActive()) {
+            timeResetItem.draw(g, this);
+        }
 
         // Hearts
         int xH = 20, yH = 10;

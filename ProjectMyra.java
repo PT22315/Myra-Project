@@ -37,4 +37,4 @@ public class ProjectMyra extends JFrame {
 //made score start at 1000 slowly goes down when time goes down to 0 and lose
 //can choose more than 1 map
 //made more map 
-//have ability item such as freeze time so the score dont go down and the component that not player are freeze too
+//have ability item such as reset time

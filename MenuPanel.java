@@ -1,6 +1,7 @@
 package projectmyra;
 //real
 import java.awt.*;
+import java.awt.event.*;
 import java.net.URL;
 import javax.swing.*;
 
@@ -13,21 +14,37 @@ public class MenuPanel extends JPanel {
 
     public MenuPanel(JFrame frame) {
         setLayout(null);
-        loadBackground("images/menu bg.jpg");
+        loadBackground("images/menu bg.png");
 
         // Start Button
         startBtn = new JButton("Start");
-        startBtn.setBounds(800, 400, 200, 80);
-        startBtn.setFont(new Font("Arial", Font.BOLD, 30));
+        startBtn.setIcon(new ImageIcon(getClass().getResource("images/startbtn.png")));
+        startBtn.setBounds(750, 400, 320, 100);
+        startBtn.setBorderPainted(false);
+        startBtn.setContentAreaFilled(false);
+        startBtn.setFocusPainted(false);
         startBtn.addActionListener(e -> showMapButtons(frame));
         add(startBtn);
-
-        // Exit Button
+        
         exitBtn = new JButton("Exit");
-        exitBtn.setBounds(800, 500, 200, 80);
-        exitBtn.setFont(new Font("Arial", Font.BOLD, 30));
+        exitBtn.setIcon(new ImageIcon(getClass().getResource("images/exitbtn.png")));
+        exitBtn.setBounds(750, 500, 320, 100);
+        exitBtn.setBorderPainted(false);
+        exitBtn.setContentAreaFilled(false);
+        exitBtn.setFocusPainted(false);
         exitBtn.addActionListener(e -> System.exit(0));
         add(exitBtn);
+        
+        //Back Button (Hide)
+        ImageIcon backIcon = new ImageIcon(getClass().getResource("images/backbtn.png"));
+        Image scaledBack = backIcon.getImage().getScaledInstance(180, 120, Image.SCALE_SMOOTH);
+        backBtn = new JButton(new ImageIcon(scaledBack));
+        backBtn.setBounds(50, 30, 150, 100);
+        backBtn.setBorderPainted(false);
+        backBtn.setContentAreaFilled(false);
+        backBtn.setFocusPainted(false);
+        backBtn.setVisible(false); // here
+        add(backBtn);
     }
 
     private void loadBackground(String path) {
@@ -49,17 +66,30 @@ public class MenuPanel extends JPanel {
 
         // Forest Button
         forestBtn = new JButton("Forest");
-        forestBtn.setBounds(475, 400, 250, 100);
-        forestBtn.setFont(new Font("Arial", Font.BOLD, 30));
+        forestBtn.setIcon(new ImageIcon(getClass().getResource("images/Forestbtn.png")));
+        forestBtn.setBounds(500, 400, 330, 130);
+        forestBtn.setBorderPainted(false);
+        forestBtn.setContentAreaFilled(false);
+        forestBtn.setFocusPainted(false);
         forestBtn.addActionListener(e -> selectMap("forest",frame));
         add(forestBtn);
 
         // Mountain Button
         mountainBtn = new JButton("Mountain");
-        mountainBtn.setBounds(1075, 400, 250, 100);
-        mountainBtn.setFont(new Font("Arial", Font.BOLD, 30));
+        mountainBtn.setIcon(new ImageIcon(getClass().getResource("images/Mountainbtn.png")));
+        mountainBtn.setBounds(1000, 400, 330, 130);
+        mountainBtn.setBorderPainted(false);
+        mountainBtn.setContentAreaFilled(false);
+        mountainBtn.setFocusPainted(false);
         mountainBtn.addActionListener(e -> selectMap("mountain",frame));
         add(mountainBtn);
+        
+        backBtn.setVisible(true);
+        // Update backBtn action
+        for (ActionListener al : backBtn.getActionListeners()) {
+            backBtn.removeActionListener(al);
+        }
+        backBtn.addActionListener(e -> backToMenu(frame));;
 
         repaint();
     }
@@ -77,27 +107,47 @@ public class MenuPanel extends JPanel {
 
         // Start Game button
         startGameBtn = new JButton("Start Game");
-        startGameBtn.setBounds(700, 500, 400, 80);
-        startGameBtn.setFont(new Font("Arial", Font.BOLD, 30));
+        startGameBtn.setIcon(new ImageIcon(getClass().getResource("images/StartGamebtn.png")));
+        startGameBtn.setBounds(650, 500, 500, 120);
+        startGameBtn.setBorderPainted(false);
+        startGameBtn.setContentAreaFilled(false);
+        startGameBtn.setFocusPainted(false);
         startGameBtn.addActionListener(e -> startGame((JFrame) getTopLevelAncestor(), selectedMap));
         add(startGameBtn);
         
-        backBtn = new JButton("Back");
-        backBtn.setBounds(50, 30, 150, 60);
-        backBtn.setFont(new Font("Arial", Font.BOLD, 25));
+        backBtn.setVisible(true);
+        // Update backBtn action
+        for (ActionListener al : backBtn.getActionListeners()) {
+            backBtn.removeActionListener(al);
+        }
         backBtn.addActionListener(e -> backToMapSelection(frame));
-        add(backBtn);
-        repaint();
-    }
+            repaint();
+        }
 
-    private void backToMapSelection(JFrame frame) {
-
+    private void backToMapSelection(JFrame frame) {        
+        loadBackground("images/menu bg.png");
         startGameBtn.setVisible(false);
-        backBtn.setVisible(false);
-
-        loadBackground("images/menu bg.jpg");
         forestBtn.setVisible(true);
         mountainBtn.setVisible(true);
+
+        for (ActionListener al : backBtn.getActionListeners()) backBtn.removeActionListener(al);
+        backBtn.addActionListener(e -> backToMenu(frame));
+        backBtn.setVisible(true);
+        repaint();
+    }
+    
+    private void backToMenu(JFrame frame) {
+        if (forestBtn != null) 
+            forestBtn.setVisible(false);
+        if (mountainBtn != null) 
+            mountainBtn.setVisible(false);
+        if (startGameBtn != null) 
+            startGameBtn.setVisible(false);
+
+        loadBackground("images/menu bg.png");
+        startBtn.setVisible(true);
+        exitBtn.setVisible(true);
+        backBtn.setVisible(false);
 
         repaint();
     }

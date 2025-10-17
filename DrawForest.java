@@ -76,7 +76,7 @@ public class DrawForest extends DrawArea {
                         stopAllTimers();
                         int choice = JOptionPane.showOptionDialog(
                                 this,
-                                "You Lose! \nYour score: " + score,
+                                "You Lose!",
                                 "Game Over",
                                 JOptionPane.YES_NO_OPTION,
                                 JOptionPane.ERROR_MESSAGE,

@@ -177,7 +177,6 @@ public class DrawMountain extends DrawArea{
 
         timeLeft = 60;
         score = 1000;
-        gameTimer.start();
     }
     @Override
     protected void backToMenu() {

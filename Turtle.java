@@ -24,7 +24,7 @@ class Turtle extends Actor {
 
         @Override
         public void update() {
-            x = x + dir * 3;
+            x = x + dir * 3; //500 + 1*3 when reach right = 1200 + (-1)*3
             if (x >= maxX || x <= minX){
                 dir = dir * -1;
             }

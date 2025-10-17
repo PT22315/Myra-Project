@@ -85,10 +85,10 @@ public class DrawMountain extends DrawArea{
             boolean onPlatform = false;
             Tile currentTile = null;
 
-            // ตรวจสอบ platform1
+            // platform1
             for (Tile t : platform1) {
                 if (myra.getX() + myra.getWidth() > t.getX() && myra.getX() < t.getX() + t.getWidth()) {
-                    if (myra.getY() + myra.getHeight() <= t.getY() + 15) {
+                    if (myra.getY() + myra.getHeight() <= t.getY() + 15) { //check for stay on platform
                         myra.setGroundY(t.getY() - myra.getHeight());
                         onPlatform = true;
                         currentTile = t;
@@ -96,7 +96,7 @@ public class DrawMountain extends DrawArea{
                 }
             }
 
-            // ตรวจสอบ platform2
+            // platform2
             for (Tile t : platform2) {
                 if (myra.getX() + myra.getWidth() > t.getX() && myra.getX() < t.getX() + t.getWidth()) {
                     if (myra.getY() + myra.getHeight() <= t.getY() + 15) {
@@ -115,11 +115,11 @@ public class DrawMountain extends DrawArea{
             int p2Left = 800;
             int p2Right = 1200;
 
-            // เช็คว่าอยู่บน platform ไหน
+            // check if stay on what platform
             boolean onPlatform1 = myra.getY() + myra.getHeight() == 600; // platform1 y=600
             boolean onPlatform2 = myra.getY() + myra.getHeight() == 500; // platform2 y=500
 
-            if (!myra.isJumping()) {
+            if (!myra.isJumping()) {//range to walk on platform
                 if (onPlatform1) {
                     if (myra.getX() < p1Left) myra.setX(p1Left);
                     if (myra.getX() + myra.getWidth() > p1Right) 
@@ -131,7 +131,7 @@ public class DrawMountain extends DrawArea{
                 }
             }
 
-            // ถ้าไม่อยู่บน platform → พื้น
+            // if not on platform then stay on ground
             if (!onPlatform) {
                 myra.setGroundY(740);
             }
@@ -213,7 +213,7 @@ public class DrawMountain extends DrawArea{
     }
     private void checkTurtleCollision(Turtle t) {
         if (myra.getY() + myra.getHeight() <= t.getY() + 50) {
-            // ข้ามหัวเต่า → ไม่ลดชีวิต
+            // over turtle head
         } else {
             myra.life--;
             if (myra.life <= 0) {

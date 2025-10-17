@@ -61,9 +61,9 @@ public class Myra extends Actor {
         if (isJumping) {
             setY(getY() - jumpVelocity);
             jumpVelocity -= gravity;
-            if (getY() >= groundY) {
+            if (getY() >= groundY) {//hit ground
                 setY(groundY);
-                isJumping = false;
+                isJumping = false;//stop
             }
         }
         //go left-right

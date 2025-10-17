@@ -69,7 +69,7 @@ public class DrawForest extends DrawArea {
             // Collision Turtle
             if (myra.getBounds().intersects(turtle.getBounds())) {
                 if (myra.getY() + myra.getHeight() <= turtle.getY() + 50) {
-                    // ข้ามหัวเต่า → ไม่ลดชีวิต
+                    // over turtle head
                 } else {
                     myra.life--;
                     if (myra.life <= 0) {
@@ -134,7 +134,6 @@ public class DrawForest extends DrawArea {
 
         timeLeft = 60;
         score = 1000;
-        gameTimer.start();
     }
     @Override
     protected void backToMenu() {

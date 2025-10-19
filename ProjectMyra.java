@@ -16,15 +16,6 @@ public class ProjectMyra extends JFrame {
 
         setVisible(true);
     }
-
-    // Static method to create game panel
-    public static DrawArea createGamePanel(JFrame frame, String mapName) {
-        if (mapName.equals("forest")) {
-            return new DrawForest(frame);
-        } else {
-            return new DrawMountain(frame);
-        }
-    }
     // ============================
     // Main
     // ============================

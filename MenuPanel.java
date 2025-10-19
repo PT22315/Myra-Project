@@ -89,7 +89,7 @@ public class MenuPanel extends JPanel {
         for (ActionListener al : backBtn.getActionListeners()) {
             backBtn.removeActionListener(al);
         }
-        backBtn.addActionListener(e -> backToMenu(frame));;
+        backBtn.addActionListener(e -> backToMenu(frame));
 
         repaint();
     }

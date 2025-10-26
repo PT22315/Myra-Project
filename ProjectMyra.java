@@ -10,6 +10,7 @@ public class ProjectMyra extends JFrame {
         setTitle("Myra");
         setSize(1800, 1080);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
 
         // Show menu first
         add(new MenuPanel(this));

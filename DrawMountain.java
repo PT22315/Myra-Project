@@ -11,6 +11,7 @@ public class DrawMountain extends DrawArea{
     private Turtle turtle1,turtle2;
     private Coin coin;
     private Image bg, fullHeart, emptyHeart;
+    private Item timeResetItem;
     private Tile[] platform1, platform2; //platform
 
     public DrawMountain(JFrame frame) {
@@ -27,6 +28,8 @@ public class DrawMountain extends DrawArea{
         
         turtle1 = new Turtle("images/turtle1.png", 1000, 740, 150, 160);
         turtle2 = new Turtle("images/turtle1.png", 500, 740, 150, 160);
+        
+        timeResetItem = new Item("images/item.png", 500, 100, 75, 90);
         
         coin = new Coin("images/coin.png", 1550, 300, 100, 100);
 
@@ -51,7 +54,12 @@ public class DrawMountain extends DrawArea{
             turtle1.update();
             turtle2.update();
             coin.update();
-
+            //Collision Item
+            if(timeResetItem.isActive() && myra.getBounds().intersects(timeResetItem.getBounds())) {
+                timeResetItem.setActive(false); 
+                timeLeft = 60;  
+                score = 1000;  
+            }
             // Collision Coin
             if (myra.getBounds().intersects(coin.getBounds())) {
                 stopAllTimers();
@@ -196,6 +204,10 @@ public class DrawMountain extends DrawArea{
         coin.draw(g, this);
         for (Tile t : platform1) t.draw(g, this);
         for (Tile t : platform2) t.draw(g, this);
+        if(timeResetItem.isActive()) {
+            timeResetItem.draw(g, this);
+        }
+
 
         // Hearts
         int xH = 20, yH = 10;
